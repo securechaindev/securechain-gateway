@@ -1,1 +1,74 @@
-# securechain-gateway
+# Secure Chain Gateway
+
+Secure Chain Gateway is a tool for managing and interacting with all microservices developed by Secure Chain. It provides a unified API interface for authentication and dependency management, allowing users to easily access and utilize the functionalities of various microservices.
+
+## Development requirements
+
+1. [Docker](https://www.docker.com/) to deploy the tool.
+2. [Docker Compose](https://docs.docker.com/compose/) for container orchestration.
+3. It is recommended to use a GUI such as [MongoDB Compass](https://www.mongodb.com/en/products/compass).
+4. The Neo4J browser interface to visualize the graph built from the data is in [localhost:7474](http://0.0.0.0:7474/browser/) when the container is running.
+5. Python 3.13 or higher.
+
+## Deployment with docker
+
+### 1. Clone the repository
+Clone the repository from the official GitHub repository:
+```bash
+git clone https://github.com/securechaindev/securechain-gateway.git
+cd securechain-gateway
+```
+
+### 2. Configure environment variables
+Create a `.env` file from the `template.env` file and place it in the `app/` directory.
+
+#### Get API Keys
+
+- How to get a *GitHub* [API key](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
+
+- Modify the **Json Web Token (JWT)** secret key and algorithm with your own. You can generate your own secret key with the command **openssl rand -base64 32**.
+
+### 3. Create Docker network
+Ensure you have the `securechain` Docker network created. If not, create it with:
+```bash
+docker network create securechain
+```
+
+#### 4. Start the application
+Run the command from the project root:
+```bash
+docker compose -f dev/docker-compose.yml up --build
+```
+
+#### 5. Access the application
+The API will be available at [http://localhost:8000](http://localhost:8000). You can access the API documentation at [http://localhost:8000/docs](http://localhost:8000/docs).
+
+## Python Environment
+The project uses Python 3.13 and the dependencies are listed in `requirements.txt`.
+
+### Setting up the development environment
+
+1. **Create a virtual environment**:
+   ```bash
+   python3.13 -m venv gateway-env
+   ```
+
+2. **Activate the virtual environment**:
+   ```bash
+   source gateway-env/bin/activate
+   ```
+
+3. **Install dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+## Contributing
+Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
+
+## License
+[GNU General Public License 3.0](https://www.gnu.org/licenses/gpl-3.0.html)
+
+## Links
+- [Secure Chain Team](mailto:hi@securechain.dev)
+- [Secure Chain Organization](https://github.com/securechaindev)
