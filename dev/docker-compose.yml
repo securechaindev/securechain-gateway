@@ -12,12 +12,11 @@ services:
       - '8000:8000'
     networks:
       - securechain
-    healthcheck:
-      test: curl --fail http://localhost:8000/health || exit 1
-      interval: 100s
-      timeout: 100s
-      retries: 10
-      start_period: 300s
+    depends_on:
+      securechain-auth:
+        condition: service_healthy
+      securechain-depex:
+        condition: service_healthy
 
   securechain-depex:
     container_name: securechain-depex
@@ -25,15 +24,14 @@ services:
     env_file:
       - ../app/.env
     ports:
-      - '8002:8000'
+      - '8000'
     networks:
       - securechain
     healthcheck:
-      test: curl --fail http://localhost:8000/health || exit 1
-      interval: 100s
-      timeout: 100s
-      retries: 10
-      start_period: 300s
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   securechain-auth:
     container_name: securechain-auth
@@ -41,15 +39,14 @@ services:
     env_file:
       - ../app/.env
     ports:
-      - '8001:8000'
+      - '8000'
     networks:
       - securechain
     healthcheck:
-      test: curl --fail http://localhost:8000/health || exit 1
-      interval: 100s
-      timeout: 100s
-      retries: 10
-      start_period: 300s
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
 networks:
   securechain:
