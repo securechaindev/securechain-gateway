@@ -1,0 +1,51 @@
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI, Request
+from fastapi.openapi.docs import get_swagger_ui_html
+from httpx import AsyncClient
+
+from app.middleware import log_request_middleware
+from app.utils import build_merged_openapi, proxy_request
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    async with AsyncClient() as client:
+        try:
+            auth = await client.get("http://securechain-auth:8000/openapi.json")
+            auth.raise_for_status()
+            depex = await client.get("http://securechain-depex:8000/openapi.json")
+            depex.raise_for_status()
+            auth_schema = auth.json()
+            depex_schema = depex.json()
+            app.openapi_schema = build_merged_openapi(auth_schema, depex_schema)
+            app.openapi = lambda: app.openapi_schema
+        except Exception as e:
+            print(f"Failed to fetch OpenAPI specs: {e}")
+            app.openapi = lambda: {
+                "openapi": "3.1.0",
+                "info": {"title": "Error", "version": "0.0.0"},
+                "paths": {},
+            }
+    yield
+
+
+app = FastAPI(title="Secure Chain Gateway", docs_url=None, lifespan=lifespan)
+app.middleware("http")(log_request_middleware)
+
+
+@app.get("/docs", include_in_schema=False)
+async def custom_docs():
+    return get_swagger_ui_html(openapi_url="/openapi.json", title="Secure Chain API Docs")
+
+
+@app.api_route("/auth/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
+async def proxy_auth(path: str, request: Request):
+    url = f"http://securechain-auth:8000/{path}"
+    return await proxy_request(url, request)
+
+
+@app.api_route("/depex/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
+async def proxy_depex(path: str, request: Request):
+    url = f"http://securechain-depex:8000/{path}"
+    return await proxy_request(url, request)
