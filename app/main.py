@@ -2,10 +2,12 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.openapi.docs import get_swagger_ui_html
+from starlette.middleware.cors import CORSMiddleware
 from httpx import AsyncClient
 
 from app.middleware import log_request_middleware
 from app.utils import build_merged_openapi, proxy_request
+from app.config import settings
 
 
 @asynccontextmanager
@@ -32,6 +34,13 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Secure Chain Gateway", docs_url=None, lifespan=lifespan)
 app.middleware("http")(log_request_middleware)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.GATEWAY_ALLOWED_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/docs", include_in_schema=False)
