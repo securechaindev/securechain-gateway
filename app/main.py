@@ -2,12 +2,12 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.openapi.docs import get_swagger_ui_html
-from starlette.middleware.cors import CORSMiddleware
 from httpx import AsyncClient
+from starlette.middleware.cors import CORSMiddleware
 
+from app.config import settings
 from app.middleware import log_request_middleware
 from app.utils import build_merged_openapi, proxy_request
-from app.config import settings
 
 
 @asynccontextmanager
