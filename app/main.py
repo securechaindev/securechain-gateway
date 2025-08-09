@@ -1,7 +1,6 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
-from fastapi.openapi.docs import get_swagger_ui_html
 from httpx import AsyncClient
 from starlette.middleware.cors import CORSMiddleware
 
@@ -41,11 +40,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.get("/docs", include_in_schema=False)
-async def custom_docs():
-    return get_swagger_ui_html(openapi_url="/openapi.json", title="Secure Chain API Docs")
 
 
 @app.api_route("/auth/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
