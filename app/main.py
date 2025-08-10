@@ -6,9 +6,9 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
 
 from app.config import settings
-from app.middleware import log_request_middleware
-from app.utils import build_merged_openapi, proxy_request, json_encoder
 from app.limiter import limiter
+from app.middleware import log_request_middleware
+from app.utils import build_merged_openapi, json_encoder, proxy_request
 
 
 @asynccontextmanager
