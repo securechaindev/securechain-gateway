@@ -4,6 +4,7 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
+    DOCS_URL: str | None = None
     GATEWAY_ALLOWED_ORIGINS: str = ""
 
 
