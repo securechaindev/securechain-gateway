@@ -4,24 +4,64 @@ from fastapi import Request
 from fastapi.responses import JSONResponse, Response
 from httpx import AsyncClient
 
+from app.logger import logger
+
+HOP_BY_HOP = {
+    "connection",
+    "keep-alive",
+    "proxy-authenticate",
+    "proxy-authorization",
+    "te",
+    "trailers",
+    "transfer-encoding",
+    "upgrade",
+}
+
+def _filtered_request_headers(items: list[tuple[str, str]]) -> dict:
+    skip = HOP_BY_HOP | {"host", "content-length"}
+    return {k: v for k, v in items if k.lower() not in skip}
+
 
 async def proxy_request(url: str, request: Request) -> Response:
-    async with AsyncClient() as client:
-        method = request.method
-        headers = dict(request.headers)
-        body = await request.body()
-        try:
-            proxied_response = await client.request(
-                method, url, headers=headers, content=body, params=request.query_params
+    try:
+        async with AsyncClient(follow_redirects=False) as client:
+            upstream = await client.request(
+                request.method,
+                url,
+                headers=_filtered_request_headers(request.headers.items()),
+                params=request.query_params,
+                content=await request.body(),
             )
-            return Response(
-                content=proxied_response.content,
-                status_code=proxied_response.status_code,
-                headers=dict(proxied_response.headers),
-                media_type=proxied_response.headers.get("content-type"),
-            )
-        except Exception as e:
-            return JSONResponse(status_code=502, content={"error": str(e)})
+        resp = Response(
+            content=upstream.content,
+            status_code=upstream.status_code,
+            media_type=upstream.headers.get("content-type"),
+        )
+        skip_out = HOP_BY_HOP | {"content-length", "date", "server", "set-cookie"}
+        for k, v in upstream.headers.items():
+            if k.lower() in skip_out:
+                continue
+            resp.headers[k] = v
+        set_cookies: list[str] = []
+        if hasattr(upstream.headers, "get_list"):
+            set_cookies = upstream.headers.get_list("set-cookie") or []
+        if not set_cookies:
+            raw = getattr(upstream.headers, "raw", None)
+            if raw is not None:
+                for k, v in raw:
+                    name = k.decode("latin1") if isinstance(k, (bytes, bytearray)) else str(k)
+                    if name.lower() == "set-cookie":
+                        value = v.decode("latin1") if isinstance(v, (bytes, bytearray)) else str(v)
+                        set_cookies.append(value)
+        if set_cookies:
+            raw_headers = list(resp.raw_headers)
+            for sc in set_cookies:
+                raw_headers.append((b"set-cookie", sc.encode("latin1")))
+            resp.raw_headers = tuple(raw_headers)
+        return resp
+    except Exception as e:
+        logger.error(f"Proxy request failed: {e}")
+        return JSONResponse(status_code=502, content={"code":"internal_error"})
 
 
 def prefix_and_tag_paths(
