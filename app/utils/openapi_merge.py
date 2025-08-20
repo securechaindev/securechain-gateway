@@ -79,9 +79,21 @@ def prefix_and_tag_paths(
             elif "/operation/config/" in path:
                 tag = f"{base_tag} - Operation/Config"
             else:
-                tag = base_tag
+                tag = f"{base_tag} Health"
+        elif base_tag == "Secure Chain VEXGen":
+            if "/vex/" in path:
+                tag = f"{base_tag} - VEX"
+            elif "/tix/" in path:
+                tag = f"{base_tag} - TIX"
+            elif "/vex_tix/" in path:
+                tag = f"{base_tag} - VEX/TIX"
+            else:
+                tag = f"{base_tag} - Health"
         else:
-            tag = base_tag
+            if "/health" in path:
+                tag = f"{base_tag} - Health"
+            else:
+                tag = f"{base_tag}"
         tags_used.add(tag)
         new_methods = {}
         for method, details in methods.items():
@@ -95,22 +107,37 @@ def prefix_and_tag_paths(
 def build_merged_openapi(
     auth_schema: dict[str, Any],
     depex_schema: dict[str, Any],
+    vexgen_schema: dict[str, Any],
     title: str = "Secure Chain API Gateway",
     version: str = "1.0.0"
 ) -> dict[str, Any]:
     from .openapi_merge import prefix_and_tag_paths
     prefixed_auth_paths, auth_tags = prefix_and_tag_paths(auth_schema, "/auth", "Secure Chain Auth")
     prefixed_depex_paths, depex_tags = prefix_and_tag_paths(depex_schema, "/depex", "Secure Chain Depex")
-    all_tags = sorted(auth_tags.union(depex_tags))
+    prefixed_vexgen_paths, vexgen_tags = prefix_and_tag_paths(vexgen_schema, "/vexgen", "Secure Chain VEXGen")
+    all_tags = sorted(auth_tags.union(depex_tags).union(vexgen_tags))
     merged_tags = [{"name": tag, "description": f"Endpoints for {tag}"} for tag in all_tags]
     merged = {
         "openapi": "3.1.0",
-        "info": {"title": title, "version": version},
-        "paths": {**prefixed_auth_paths, **prefixed_depex_paths},
+        "info": {
+            "title": title,
+            "version": version,
+            "contact": {
+                "name": "Secure Chain Team",
+                "url": "https://github.com/securechaindev",
+                "email": "hi@securechain.dev",
+            },
+            "license": {
+                "name": "GNU General Public License v3.0 or later (GPLv3+)",
+                "url": "https://www.gnu.org/licenses/gpl-3.0.html",
+            },
+        },
+        "paths": {**prefixed_auth_paths, **prefixed_depex_paths, **prefixed_vexgen_paths},
         "components": {
             "schemas": {
                 **auth_schema.get("components", {}).get("schemas", {}),
                 **depex_schema.get("components", {}).get("schemas", {}),
+                **vexgen_schema.get("components", {}).get("schemas", {}),
             }
         },
         "tags": merged_tags
