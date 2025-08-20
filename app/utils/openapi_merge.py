@@ -79,7 +79,7 @@ def prefix_and_tag_paths(
             elif "/operation/config/" in path:
                 tag = f"{base_tag} - Operation/Config"
             else:
-                tag = f"{base_tag} Health"
+                tag = f"{base_tag} - Health"
         elif base_tag == "Secure Chain VEXGen":
             if "/vex/" in path:
                 tag = f"{base_tag} - VEX"
@@ -93,7 +93,7 @@ def prefix_and_tag_paths(
             if "/health" in path:
                 tag = f"{base_tag} - Health"
             else:
-                tag = f"{base_tag}"
+                tag = f"{base_tag} - User"
         tags_used.add(tag)
         new_methods = {}
         for method, details in methods.items():
