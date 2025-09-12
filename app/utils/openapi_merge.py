@@ -74,8 +74,8 @@ def prefix_and_tag_paths(
         if base_tag == "Secure Chain Depex":
             if "/graph/" in path:
                 tag = f"{base_tag} - Graph"
-            elif "/operation/package/" in path:
-                tag = f"{base_tag} - Operation/Package"
+            elif "/operation/ssc/" in path:
+                tag = f"{base_tag} - Operation/SSC"
             elif "/operation/file/" in path:
                 tag = f"{base_tag} - Operation/File"
             elif "/operation/config/" in path:
