@@ -89,7 +89,7 @@ class TestProxyHandler:
         mock_client.__aenter__ = AsyncMock(return_value=mock_client)
         mock_client.__aexit__ = AsyncMock(return_value=None)
 
-        mocker.patch("app.utils.proxy_handler.AsyncClient", return_value=mock_client)
+        mocker.patch("app.domain.proxy_handler.AsyncClient", return_value=mock_client)
 
         response = await proxy_handler.proxy_request("http://test.com", mock_request)
 
@@ -109,7 +109,7 @@ class TestProxyHandler:
         mock_client.__aenter__ = AsyncMock(return_value=mock_client)
         mock_client.__aexit__ = AsyncMock(return_value=None)
 
-        mocker.patch("app.utils.proxy_handler.AsyncClient", return_value=mock_client)
+        mocker.patch("app.domain.proxy_handler.AsyncClient", return_value=mock_client)
 
         response = await proxy_handler.proxy_request("http://test.com", mock_request)
 
