@@ -1,21 +1,26 @@
-FROM python:3.13.2-slim AS builder
+FROM python:3.13-slim AS builder
 
-WORKDIR /install
+ENV UV_SYSTEM_PYTHON=1
 
-COPY requirements.txt .
+WORKDIR /build
 
-RUN pip install --upgrade pip && \
-    pip install --prefix=/install/deps --no-cache-dir -r requirements.txt
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-FROM python:3.13.2-slim AS runtime
+COPY pyproject.toml uv.lock README.md ./
+
+RUN uv sync --frozen --no-cache
+
+FROM python:3.13-slim AS runtime
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    PATH="/build/.venv/bin:$PATH"
 
-WORKDIR /app
+WORKDIR /
 
-COPY --from=builder /install/deps /usr/local
-COPY ./app ./app
+COPY --from=builder /build/.venv /build/.venv
+
+COPY app ./app
 
 EXPOSE 8000
 

@@ -1,13 +1,24 @@
-FROM python:3.13.2-slim
+FROM python:3.13-slim
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    UV_SYSTEM_PYTHON=1 \
+    PATH="/.venv/bin:$PATH"
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends git \
+ && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /
 
-COPY /requirements.txt ./
+COPY pyproject.toml uv.lock README.md ./
 
-RUN pip install --upgrade pip
+COPY app ./app
 
-RUN pip install -r requirements.txt
+RUN uv sync --frozen --no-cache
 
 EXPOSE 8000
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--reload-dir", "app"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--reload-dir", "/app", "--reload-exclude", "repositories"]
