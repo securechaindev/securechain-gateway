@@ -113,7 +113,6 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-gateway-env/
 
 # Spyder project settings
 .spyderproject
