@@ -1,14 +1,39 @@
 # Secure Chain Gateway
 
-Secure Chain Gateway is a tool for managing and interacting with all microservices developed by Secure Chain. It provides a unified API interface for authentication and dependency management, allowing users to easily access and utilize the functionalities of various microservices.
+Secure Chain Gateway is an API Gateway that provides a unified interface for all Secure Chain microservices. It acts as a single entry point with features like rate limiting, CORS management, request logging, and unified OpenAPI documentation.
+
+## Features
+
+- 🚪 **Single Entry Point** - Unified API interface for all microservices
+- 🔒 **Rate Limiting** - Configurable limits per endpoint (25-75 req/min)
+- 🌐 **CORS Management** - Configurable cross-origin resource sharing
+- 📝 **Request Logging** - Detailed logging with timing information
+- 📚 **Unified OpenAPI** - Merged documentation from all microservices
+- 🔄 **Transparent Proxy** - Smart header filtering and cookie preservation
+- ⚡ **High Performance** - Async/await throughout, tested with 90% coverage
+- 🎯 **Type Safe** - Complete type hints for better IDE support
+
+## Architecture
+
+The gateway proxies requests to three microservices:
+
+- **securechain-auth** (`/auth/*`) - Authentication and user management
+- **securechain-depex** (`/depex/*`) - Dependency analysis and graphs
+- **securechain-vexgen** (`/vexgen/*`) - VEX/TIX generation
 
 ## Development requirements
 
-1. [Docker](https://www.docker.com/) to deploy the tool.
-2. [Docker Compose](https://docs.docker.com/compose/) for container orchestration.
-3. It is recommended to use a GUI such as [MongoDB Compass](https://www.mongodb.com/en/products/compass).
-4. The Neo4J browser interface to visualize the graph built from the data is in [localhost:7474](http://0.0.0.0:7474/browser/) when the container is running.
-5. Python 3.13 or higher.
+1. [Docker](https://www.docker.com/) to deploy the tool
+2. [Docker Compose](https://docs.docker.com/compose/) for container orchestration
+3. Python 3.13 or higher
+4. [uv](https://github.com/astral-sh/uv) (recommended for faster dependency management)
+5. The Neo4J browser interface is available at [localhost:7474](http://0.0.0.0:7474/browser/)
+6. [MongoDB Compass](https://www.mongodb.com/en/products/compass) recommended for database GUI
+
+### Database Access
+
+- **Neo4j Browser**: http://localhost:7474
+- **MongoDB**: Use [MongoDB Compass](https://www.mongodb.com/products/compass)
 
 ## Deployment with docker
 
@@ -20,7 +45,7 @@ cd securechain-gateway
 ```
 
 ### 2. Configure environment variables
-Create a `.env` file from the `template.env` file and place it in the `app/` directory.
+Create a `.env` file from the `template.env` file and place it inside app directory.
 
 #### Get API Keys
 
@@ -50,30 +75,89 @@ docker compose -f dev/docker-compose.yml up --build
 ```
 
 ### 6. Access the application
-The API will be available at [http://localhost:8000](http://localhost:8000). You can access the API documentation at [http://localhost:8000/docs](http://localhost:8000/docs).
+The API will be available at [http://localhost:8080](http://localhost:8080). You can access the API documentation at [http://localhost:8080/docs](http://localhost:8080/docs).
 
-## Python Environment
-The project uses Python 3.13 and the dependencies are listed in `requirements.txt`.
+## Development Environment
 
-### Setting up the development environment
+The project uses **Python 3.13+** and dependencies are managed via **pyproject.toml**.
 
-1. **Create a virtual environment**:
-   ```bash
-   python3.13 -m venv gateway-env
-   ```
+### Using uv (recommended)
 
-2. **Activate the virtual environment**:
-   ```bash
-   source gateway-env/bin/activate
-   ```
+[uv](https://github.com/astral-sh/uv) is a fast Python package installer:
 
-3. **Install dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
+```bash
+# Install uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Install dependencies (automatically creates venv)
+uv sync
+
+# Activate virtual environment
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+```
+
+### Using pip (alternative)
+
+```bash
+# Create virtual environment
+python3.13 -m venv .venv
+
+# Activate virtual environment
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install dependencies
+pip install -e .
+```
+
+### Development Tools
+
+The project uses:
+- **pytest** 8.4.2 for testing
+- **pytest-asyncio** for async test support
+- **ruff** for linting
+Run quality checks:
+
+```bash
+# Linting
+ruff check .
+``
+
+## Testing
+
+The project includes comprehensive tests with 90% coverage:
+
+```bash
+# Run all tests
+uv run pytest
+
+# Run with coverage report
+uv run pytest --cov=app --cov-report=term-missing
+
+# Run specific test file
+uv run pytest tests/integration/test_endpoints.py -v
+```
+
+### Test Structure
+
+- **22 tests total** (9 unit + 13 integration)
+- **Integration tests** (`test_endpoints.py`): 13 tests covering health, proxy routes, OpenAPI
+- **Unit tests** (`test_openapi_merge.py`): 9 tests for OpenAPI merging and header filtering
 
 ## Contributing
+
 Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
+
+### Contribution Guidelines
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes with proper type hints
+4. Add tests for new functionality
+5. Ensure all tests pass (`pytest`)
+6. Run linting (`ruff check .`)
+7. Commit your changes (`git commit -m 'Add amazing feature'`)
+8. Push to the branch (`git push origin feature/amazing-feature`)
+9. Open a Pull Request
 
 ## License
 [GNU General Public License 3.0](https://www.gnu.org/licenses/gpl-3.0.html)
