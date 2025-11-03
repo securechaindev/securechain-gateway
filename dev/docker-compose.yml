@@ -50,6 +50,17 @@ services:
       timeout: 3s
       retries: 5
 
+  redis:
+    container_name: securechain-redis
+    image: redis:7-alpine
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/data
+    networks:
+      - securechain
+    command: redis-server --appendonly yes
+
   securechain-vexgen:
     container_name: securechain-vexgen
     image: ghcr.io/securechaindev/securechain-vexgen:latest
