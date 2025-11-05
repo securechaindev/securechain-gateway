@@ -22,31 +22,34 @@ class OpenAPIManager:
         }
 
     def determine_tag(self, path: str, base_tag: str) -> str:
-        if base_tag == "Secure Chain Depex":
-            if "/graph/" in path:
-                return f"{base_tag} - Graph"
-            elif "/operation/ssc/" in path:
-                return f"{base_tag} - Operation/SSC"
-            elif "/operation/smt/" in path:
-                return f"{base_tag} - Operation/SMT"
-            else:
-                return f"{base_tag} - Health"
+        match base_tag:
+            case "Secure Chain Depex":
+                if "/graph/" in path:
+                    return f"{base_tag} - Graph"
+                elif "/operation/ssc/" in path:
+                    return f"{base_tag} - Operation/SSC"
+                elif "/operation/smt/" in path:
+                    return f"{base_tag} - Operation/SMT"
+                else:
+                    return f"{base_tag} - Health"
 
-        elif base_tag == "Secure Chain VEXGen":
-            if "/vex/" in path:
-                return f"{base_tag} - VEX"
-            elif "/tix/" in path:
-                return f"{base_tag} - TIX"
-            elif "/vex_tix/" in path:
-                return f"{base_tag} - VEX/TIX"
-            else:
-                return f"{base_tag} - Health"
+            case "Secure Chain VEXGen":
+                if "/vex/" in path:
+                    return f"{base_tag} - VEX"
+                elif "/tix/" in path:
+                    return f"{base_tag} - TIX"
+                elif "/vex_tix/" in path:
+                    return f"{base_tag} - VEX/TIX"
+                else:
+                    return f"{base_tag} - Health"
 
-        else:
-            if "/health" in path:
-                return f"{base_tag} - Health"
-            else:
-                return f"{base_tag} - User"
+            case "Secure Chain Auth":
+                if "/user" in path:
+                    return f"{base_tag} - User"
+                elif "/api-keys" in path:
+                    return f"{base_tag} - API Keys"
+                else:
+                    return f"{base_tag} - Health"
 
     def prefix_and_tag_paths(
         self, schema: dict[str, Any], prefix: str, base_tag: str
