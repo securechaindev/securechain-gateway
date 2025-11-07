@@ -81,3 +81,6 @@ networks:
     name: securechain
     external: true
     driver: bridge
+
+volumes:
+  redis-data:
