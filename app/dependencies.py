@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import Self
 
 from app.utils import JSONEncoder, OpenAPIManager, ProxyHandler
