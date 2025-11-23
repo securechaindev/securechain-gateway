@@ -1,6 +1,6 @@
 [project]
 name = "securechain-gateway"
-version = "1.1.0"
+version = "1.1.1"
 description = "A tool for managing and interacting with all microservices developed by Secure Chain"
 readme = "README.md"
 requires-python = ">=3.14"

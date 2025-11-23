@@ -5,7 +5,7 @@ This document serves as memory and context for AI agents working on this project
 ## General Project Information
 
 - **Name**: Secure Chain Gateway
-- **Version**: 1.1.0
+- **Version**: 1.1.1
 - **License**: GPL-3.0-or-later
 - **Python**: >= 3.13
 - **Framework**: FastAPI 0.116.1
@@ -435,7 +435,7 @@ ruff format app/    # Format code
 
 ## Important Change History
 
-### v1.1.0 (Current)
+### v1.1.1 (Current)
 - Current project version
 - Python 3.13 as minimum requirement
 - Migration to uv for dependency management (recommended)
