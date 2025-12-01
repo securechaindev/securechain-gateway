@@ -5,14 +5,16 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    model_config = ConfigDict(env_file=".env")
+    model_config = ConfigDict(env_file=".env", extra="ignore")
 
-    DOCS_URL: str | None = None
-    GATEWAY_ALLOWED_ORIGINS: str = ""
+    # Service URLs (required)
+    AUTH_SERVICE_URL: str = Field(..., alias="AUTH_SERVICE_URL")
+    DEPEX_SERVICE_URL: str = Field(..., alias="DEPEX_SERVICE_URL")
+    VEXGEN_SERVICE_URL: str = Field(..., alias="VEXGEN_SERVICE_URL")
 
-    AUTH_SERVICE_URL: str = Field(default="http://securechain-auth:8000")
-    DEPEX_SERVICE_URL: str = Field(default="http://securechain-depex:8000")
-    VEXGEN_SERVICE_URL: str = Field(default="http://securechain-vexgen:8000")
+    # Application settings (safe defaults)
+    DOCS_URL: str | None = Field(None, alias="DOCS_URL")
+    GATEWAY_ALLOWED_ORIGINS: list[str] = Field(["*"], alias="GATEWAY_ALLOWED_ORIGINS")
 
 
 @lru_cache

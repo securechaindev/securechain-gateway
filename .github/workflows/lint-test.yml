@@ -26,4 +26,8 @@ jobs:
         run: uv run ruff check app
 
       - name: Run tests
+        env:
+          AUTH_SERVICE_URL: http://securechain-auth:test
+          DEPEX_SERVICE_URL: http://securechain-depex:test
+          VEXGEN_SERVICE_URL: http://securechain-vexgen:test
         run: uv run pytest -v
