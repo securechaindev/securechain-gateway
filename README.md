@@ -79,7 +79,7 @@ The API will be available at [http://localhost:8080](http://localhost:8080). You
 
 ## Development Environment
 
-The project uses **Python 3.13+** and dependencies are managed via **pyproject.toml**.
+The project uses **Python 3.14+** and dependencies are managed via **pyproject.toml**.
 
 ### Using uv (recommended)
 
@@ -89,39 +89,22 @@ The project uses **Python 3.13+** and dependencies are managed via **pyproject.t
 # Install uv
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
+# Activate virtual environment
+uv venv
+source .venv/bin/activate
+
 # Install dependencies (automatically creates venv)
 uv sync
 
-# Activate virtual environment
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 ```
 
-### Using pip (alternative)
-
-```bash
-# Create virtual environment
-python3.13 -m venv .venv
-
-# Activate virtual environment
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-
-# Install dependencies
-pip install -e .
-```
-
-### Development Tools
+### Testing
 
 The project uses:
 - **pytest** 8.4.2 for testing
 - **pytest-asyncio** for async test support
-- **ruff** for linting
-Run quality checks:
 
 ```bash
-# Linting
-ruff check .
-``
-
 ## Testing
 
 The project includes comprehensive tests with 90% coverage:
@@ -142,6 +125,18 @@ uv run pytest tests/integration/test_endpoints.py -v
 - **22 tests total** (9 unit + 13 integration)
 - **Integration tests** (`test_endpoints.py`): 13 tests covering health, proxy routes, OpenAPI
 - **Unit tests** (`test_openapi_merge.py`): 9 tests for OpenAPI merging and header filtering
+
+### Code Quality
+```bash
+# Install linter
+uv sync --extra dev
+
+# Linting
+uv ruff check app/
+
+# Formatting
+uv ruff format app/
+```
 
 ## Contributing
 
