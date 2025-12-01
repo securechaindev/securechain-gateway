@@ -7,7 +7,7 @@ services:
     volumes:
       - ../app:/app
     env_file:
-      - ../app/.env
+      - ../.env
     ports:
       - '8000:8000'
     networks:
@@ -24,7 +24,7 @@ services:
     container_name: securechain-auth
     image: ghcr.io/securechaindev/securechain-auth:latest
     env_file:
-      - ../app/.env
+      - ../.env
     ports:
       - '8000'
     networks:
@@ -39,7 +39,7 @@ services:
     container_name: securechain-depex
     image: ghcr.io/securechaindev/securechain-depex:latest
     env_file:
-      - ../app/.env
+      - ../.env
     ports:
       - '8000'
     networks:
@@ -65,7 +65,7 @@ services:
     container_name: securechain-vexgen
     image: ghcr.io/securechaindev/securechain-vexgen:latest
     env_file:
-      - ../app/.env
+      - ../.env
     ports:
       - '8000'
     networks:
