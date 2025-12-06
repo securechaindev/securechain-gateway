@@ -1,5 +1,3 @@
-from typing import Self
-
 from app.utils import JSONEncoder, OpenAPIManager, ProxyHandler
 
 
