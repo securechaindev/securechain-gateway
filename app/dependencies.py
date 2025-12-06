@@ -9,7 +9,7 @@ class ServiceContainer:
     proxy_handler_obj: ProxyHandler | None = None
     openapi_manager_obj: OpenAPIManager | None = None
 
-    def __new__(cls) -> Self:
+    def __new__(cls) -> ServiceContainer:
         if cls.instance is None:
             cls.instance = super().__new__(cls)
         return cls.instance
