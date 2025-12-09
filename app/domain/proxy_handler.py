@@ -58,7 +58,7 @@ class ProxyHandler:
                 media_type=upstream.headers.get("content-type"),
             )
 
-            filtered_headers = self.filter_response_headers(upstream.headers)
+            filtered_headers = self.filter_response_headers(dict(upstream.headers))
             for k, v in filtered_headers.items():
                 resp.headers[k] = v
 
@@ -67,7 +67,7 @@ class ProxyHandler:
                 raw_headers = list(resp.raw_headers)
                 for cookie in set_cookies:
                     raw_headers.append((b"set-cookie", cookie.encode("latin1")))
-                resp.raw_headers = tuple(raw_headers)
+                resp.raw_headers = raw_headers
 
             return resp
 
