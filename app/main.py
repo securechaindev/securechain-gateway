@@ -34,7 +34,11 @@ async def lifespan(app: FastAPI):
             app.openapi_schema = openapi_manager.merge_schemas(
                 auth_schema, depex_schema, vexgen_schema
             )
-            app.openapi = lambda: app.openapi_schema
+            app.openapi = lambda: app.openapi_schema or {
+                "openapi": "3.1.0",
+                "info": {"title": "Error", "version": "0.0.0"},
+                "paths": {},
+            }
         except Exception as e:
             print(f"Failed to fetch OpenAPI specs: {e}")
             app.openapi = lambda: {
