@@ -21,7 +21,7 @@ class OpenAPIManager:
             "url": "https://www.gnu.org/licenses/gpl-3.0.html",
         }
 
-    def determine_tag(self, path: str, base_tag: str) -> str:
+    def determine_tag(self, path: str, base_tag: str) -> str | None:
         match base_tag:
             case "Secure Chain Depex":
                 if "/graph/" in path:
@@ -60,7 +60,8 @@ class OpenAPIManager:
         for path, methods in schema.get("paths", {}).items():
             full_path = path if path.startswith(prefix) else f"{prefix}{path}"
             tag = self.determine_tag(path, base_tag)
-            tags_used.add(tag)
+            if tag is not None:
+                tags_used.add(tag)
 
             new_methods: dict[str, Any] = {}
             for method, details in methods.items():
