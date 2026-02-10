@@ -1,5 +1,9 @@
 # Secure Chain Gateway
 
+[![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Lint & Test](https://github.com/securechaindev/securechain-gateway/actions/workflows/lint-test.yml/badge.svg)]()
+[![GHCR](https://img.shields.io/badge/GHCR-securechain--gateway-blue?logo=docker)](https://github.com/orgs/securechaindev/packages/container/package/securechain-gateway)
+
 Secure Chain Gateway is an API Gateway that provides a unified interface for all Secure Chain microservices. It acts as a single entry point with features like rate limiting, CORS management, request logging, and unified OpenAPI documentation.
 
 ## Features
@@ -25,7 +29,7 @@ The gateway proxies requests to three microservices:
 
 1. [Docker](https://www.docker.com/) to deploy the tool
 2. [Docker Compose](https://docs.docker.com/compose/) for container orchestration
-3. Python 3.13 or higher
+3. Python 3.14 or higher
 4. [uv](https://github.com/astral-sh/uv) (recommended for faster dependency management)
 5. The Neo4J browser interface is available at [localhost:7474](http://0.0.0.0:7474/browser/)
 6. [MongoDB Compass](https://www.mongodb.com/en/products/compass) recommended for database GUI
@@ -83,30 +87,39 @@ The project uses Python 3.14 and [uv](https://github.com/astral-sh/uv) as the pa
 
 ### Setting up the development environment with uv
 
-```bash
-# Install uv
-curl -LsSf https://astral.sh/uv/install.sh | sh
+1. **Install uv** (if not already installed):
+   ```bash
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+   ```
 
-# Activate virtual environment
-uv venv
-source .venv/bin/activate
+2. **Activate the virtual environment** (uv creates it automatically):
+   ```bash
+   uv venv
+   source .venv/bin/activate
+   ```
 
-# Install dependencies (automatically creates venv)
-uv sync
-
-```
+3. **Install dependencies**:
+   ```bash
+   uv sync
+   ```
 
 ## Testing
 
 ```bash
+# Install test dependencies
+uv sync --extra test
+
 # Run all tests
 uv run pytest
 
-# Run with coverage report
-uv run pytest --cov=app --cov-report=term-missing
+# Run tests with coverage report
+uv run pytest --cov=app --cov-report=term-missing --cov-report=html
 
 # Run specific test file
-uv run pytest tests/integration/test_endpoints.py -v
+uv run pytest tests/unit/controllers/test_graph_controller.py -v
+
+# Run only unit tests
+uv run pytest tests/unit/ -v
 ```
 
 ## Code Quality
@@ -124,7 +137,7 @@ uv run ruff format app/
 
 ## Contributing
 
-Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
+Pull requests are welcome! To contribute follow this [guidelines](https://securechaindev.github.io/contributing.html).
 
 ## License
 [GNU General Public License 3.0](https://www.gnu.org/licenses/gpl-3.0.html)
