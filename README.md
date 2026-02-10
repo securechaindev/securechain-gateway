@@ -96,7 +96,7 @@ uv sync
 
 ```
 
-### Testing
+## Testing
 
 ```bash
 # Run all tests
@@ -109,7 +109,7 @@ uv run pytest --cov=app --cov-report=term-missing
 uv run pytest tests/integration/test_endpoints.py -v
 ```
 
-### Code Quality
+## Code Quality
 
 ```bash
 # Install linter
