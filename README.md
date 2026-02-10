@@ -79,9 +79,9 @@ The API will be available at [http://localhost:8080](http://localhost:8080). You
 
 ## Development Environment
 
-The project uses **Python 3.14+** and dependencies are managed via **pyproject.toml**.
+The project uses Python 3.14 and uv as the package manager for faster and more reliable dependency management.
 
-### Using uv (recommended)
+### Setting up the development environment with uv
 
 [uv](https://github.com/astral-sh/uv) is a fast Python package installer:
 
@@ -100,15 +100,6 @@ uv sync
 
 ### Testing
 
-The project uses:
-- **pytest** 8.4.2 for testing
-- **pytest-asyncio** for async test support
-
-```bash
-## Testing
-
-The project includes comprehensive tests with 90% coverage:
-
 ```bash
 # Run all tests
 uv run pytest
@@ -120,39 +111,22 @@ uv run pytest --cov=app --cov-report=term-missing
 uv run pytest tests/integration/test_endpoints.py -v
 ```
 
-### Test Structure
-
-- **22 tests total** (9 unit + 13 integration)
-- **Integration tests** (`test_endpoints.py`): 13 tests covering health, proxy routes, OpenAPI
-- **Unit tests** (`test_openapi_merge.py`): 9 tests for OpenAPI merging and header filtering
-
 ### Code Quality
+
 ```bash
 # Install linter
 uv sync --extra dev
 
 # Linting
-uv ruff check app/
+uv run ruff check app/
 
 # Formatting
-uv ruff format app/
+uv run ruff format app/
 ```
 
 ## Contributing
 
 Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
-
-### Contribution Guidelines
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes with proper type hints
-4. Add tests for new functionality
-5. Ensure all tests pass (`pytest`)
-6. Run linting (`ruff check .`)
-7. Commit your changes (`git commit -m 'Add amazing feature'`)
-8. Push to the branch (`git push origin feature/amazing-feature`)
-9. Open a Pull Request
 
 ## License
 [GNU General Public License 3.0](https://www.gnu.org/licenses/gpl-3.0.html)
