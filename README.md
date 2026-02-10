@@ -79,11 +79,9 @@ The API will be available at [http://localhost:8080](http://localhost:8080). You
 
 ## Development Environment
 
-The project uses Python 3.14 and uv as the package manager for faster and more reliable dependency management.
+The project uses Python 3.14 and [uv](https://github.com/astral-sh/uv) as the package manager for faster and more reliable dependency management.
 
 ### Setting up the development environment with uv
-
-[uv](https://github.com/astral-sh/uv) is a fast Python package installer:
 
 ```bash
 # Install uv
